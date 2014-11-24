@@ -13,10 +13,13 @@
 //limitations under the License.
 
 using System;
+using System.Configuration;
+using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Stackoverflow_Question_Poller
 {
@@ -25,12 +28,24 @@ namespace Stackoverflow_Question_Poller
     {
         static void Main()
         {
-            RunAsync().Wait();
+            var jsonQuestions = GetLatestQuestions().Result;
+
+            foreach (var question in jsonQuestions.items)
+            {
+                Console.WriteLine(question.title);
+                Console.WriteLine(question.body);
+                Console.WriteLine(question.link);
+                Console.WriteLine();
+            }
+
             Console.ReadLine();
         }
 
-        static async Task RunAsync()
+        static async Task<dynamic> GetLatestQuestions()
         {
+            var newQuestionsAsOfMinutes = Int32.Parse(ConfigurationManager.AppSettings["minutes_since_asked"]);
+            var tags = ConfigurationManager.AppSettings["tags"];
+
             using (var client = new HttpClient(new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip
@@ -41,19 +56,16 @@ namespace Stackoverflow_Question_Poller
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var fromDate = DateTime.Now.AddDays(-5).ToUnixTime();
+                var fromDate = DateTime.Now.AddDays(-newQuestionsAsOfMinutes).ToUnixTime();
                 var filter = String.Format("/2.2/search?fromdate={0}&order={1}&sort={2}&site={3}&filter={4}&tagged={5}", fromDate,
-                    "desc", "activity", "stackoverflow", "withbody", "lucene.net");
-                Console.Write(filter);
+                    "desc", "activity", "stackoverflow", "withbody", tags);
+                
                 var response = await client.GetAsync(filter);
-                if (response.IsSuccessStatusCode)
-                {
-                    var message = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode) return null;
 
-                    Console.WriteLine(message);
-                }
+                var message = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject(message);
             }
         }
-
     }
 }
