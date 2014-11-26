@@ -36,8 +36,8 @@ namespace Stackoverflow_Question_Poller
                 Console.WriteLine(question.body);
                 Console.WriteLine(question.link);
                 Console.WriteLine();
+                Email.SendEmail(question.title.Value.ToString(), question.body.Value.ToString(), question.link.Value.ToString());
             }
-
             Console.ReadLine();
         }
 
