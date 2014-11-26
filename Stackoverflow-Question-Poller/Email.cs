@@ -9,12 +9,12 @@ namespace Stackoverflow_Question_Poller
         public static void SendEmail(string title, string body, string link)
         {
             //get configured settings
-            string smtpServer = ConfigurationManager.AppSettings["stmp_server"];
-            string emailFrom = ConfigurationManager.AppSettings["email_from"];
-            string emailFromCred = ConfigurationManager.AppSettings["email_from_cred"];
-            string emailTo = ConfigurationManager.AppSettings["email_to"];
-            bool isBodyHtml = bool.Parse(ConfigurationManager.AppSettings["is_body_html"]);
-            int stmpClientPort = Int32.Parse(ConfigurationManager.AppSettings["smtp_client_port"]);
+            var smtpServer = ConfigurationManager.AppSettings["stmp_server"];
+            var emailFrom = ConfigurationManager.AppSettings["email_from"];
+            var emailFromCred = ConfigurationManager.AppSettings["email_from_cred"];
+            var emailTo = ConfigurationManager.AppSettings["email_to"];
+            var isBodyHtml = bool.Parse(ConfigurationManager.AppSettings["is_body_html"]);
+            var stmpClientPort = Int32.Parse(ConfigurationManager.AppSettings["smtp_client_port"]);
                 
             using (var smtpClient = new SmtpClient(smtpServer))
             {
