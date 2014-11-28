@@ -9,7 +9,7 @@ namespace Stackoverflow_Question_Poller
         public static void SendEmail(string title, string body, string link)
         {
             //get configured settings
-            var smtpServer = ConfigurationManager.AppSettings["stmp_server"];
+            var smtpServer = ConfigurationManager.AppSettings["smtp_server"];
             var emailFrom = ConfigurationManager.AppSettings["email_from"];
             var emailFromCred = ConfigurationManager.AppSettings["email_from_cred"];
             var emailTo = ConfigurationManager.AppSettings["email_to"];
