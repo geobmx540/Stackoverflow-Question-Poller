@@ -18,18 +18,20 @@ namespace Stackoverflow_Question_Poller
                 
             using (var smtpClient = new SmtpClient(smtpServer))
             {
-                var mail = new MailMessage();
-                mail.From = new MailAddress(emailFrom);
+                var mail = new MailMessage {From = new MailAddress(emailFrom), Subject = title, IsBodyHtml = isBodyHtml};
                 mail.To.Add(emailTo);
-                mail.Subject = title;
-                mail.IsBodyHtml = isBodyHtml;
-                mail.Body = body + "\n\n" + link;
+                mail.Body = body + "\n\n" + ReturnLink(link);
                 smtpClient.Port = stmpClientPort;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.Credentials = new System.Net.NetworkCredential(emailFrom, emailFromCred);
                 smtpClient.EnableSsl = true;
                 smtpClient.Send(mail);
             }
+        }
+
+        private static String ReturnLink(string link)
+        {
+            return String.Format("<a href='{0}'>{0}</a>", link);
         }
 
     }

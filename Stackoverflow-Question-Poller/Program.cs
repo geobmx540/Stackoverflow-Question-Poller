@@ -14,7 +14,6 @@
 
 using System;
 using System.Configuration;
-using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -32,13 +31,12 @@ namespace Stackoverflow_Question_Poller
 
             foreach (var question in jsonQuestions.items)
             {
-                Console.WriteLine(question.title);
-                Console.WriteLine(question.body);
-                Console.WriteLine(question.link);
-                Console.WriteLine();
+                Console.Out.WriteLine(question.title);
+                Console.Out.WriteLine(question.body);
+                Console.Out.WriteLine(question.link);
+                Console.Out.WriteLine();
                 Email.SendEmail(question.title.Value.ToString(), question.body.Value.ToString(), question.link.Value.ToString());
             }
-            Console.ReadLine();
         }
 
         static async Task<dynamic> GetLatestQuestions()
